@@ -10,16 +10,9 @@
 
 int main(int argc, char* argv[])
 {
-    printf("Hey! Welcome to Nick's Library. Please let me know how I can help you.");
+    printf("Hey! Welcome to Nick's Library. Please let me know how I can help you.\n");
     VECTOR hVector = init_default();
-    STRING hString1;
-    STRING hString2;
-    STRING hString3;
-    STRING hString4;
-    STRING hString5;
-    STRING hString6;
     pop(hVector);
-    
     
     return 0;
 }
