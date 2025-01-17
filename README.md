@@ -1,1 +1,1 @@
-Hey guys. Just a little project I'm working on. I love books and the "collect" for this library will likely just be my own personal collection of books. If you got any suggestions let me know! All help is appreciated.
+Hey guys. Just a little project I'm working on. I love books and the "collection" for this library will likely just be my own personal collection of books. If you got any suggestions let me know! All help is appreciated.
