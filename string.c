@@ -58,8 +58,10 @@ STRING string_init_assign(const char* str)
     for(int i = 0; i < pString->size; i++)
     {
         pString->data[i] = str[i];
+        /* - testing
         printf("added char: %c\n", pString->data[i]);
         printf("string: %s\n", pString->data);
+        */
     }
 
     return pString;
@@ -81,12 +83,19 @@ int string_length(STRING hString)
 
 Status string_empty(STRING hString)
 {
-    return SUCCESS;
+    String* pString = (String*)hString;
+    return (!pString->size);
 }
 
 STRING* string_at(STRING hString, int index)
 {
-    return NULL;
+    String* pString = (String*)hString;
+    if(index > pString->size || index < 0)
+    {
+        fprintf(stderr, "This index is out of bounds");
+        exit(1);
+    }
+    return &pString->data[index];
 }
 
 Status string_concat(STRING targt, STRING append)
