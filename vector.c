@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include "vector.h"
 #include "string.h"
+#include "status.h"
+#include "book.h"
 
 struct vector{
-    STRING* data;
+    Book* data;
     int size;
     int capacity;
 };
@@ -12,7 +14,7 @@ typedef struct vector Vector;
 
 Status resize(Vector* pVector, int newCapacity);
 
-VECTOR init_default(void)
+VECTOR vector_init_default(void)
 {
     Vector* pVector = (Vector*)malloc(sizeof(Vector));
     if(!pVector)
@@ -22,7 +24,7 @@ VECTOR init_default(void)
     }
     pVector->size = 0;
     pVector->capacity = 10;
-    pVector->data = (STRING*)malloc(pVector->capacity * sizeof(STRING));
+    pVector->data = (Book*)malloc(pVector->capacity * sizeof(Book));
     if(!pVector->data)
     {
         fprintf(stderr, "Failed to allocate memory...\n");
@@ -31,7 +33,8 @@ VECTOR init_default(void)
     
     return pVector;
 }
-void destroy(VECTOR* phVector)
+
+void vector_destroy(VECTOR* phVector)
 {
     Vector* pVector = (Vector*)*phVector;
     //not sure which is correct yet. will test at a later date.
@@ -43,7 +46,7 @@ void destroy(VECTOR* phVector)
     pVector = NULL;
 }
 
-Status push_back(VECTOR hVector, STRING hString)
+Status vector_push_back(VECTOR hVector, Book* pBook)
 {
     Vector* pVector = (Vector*)hVector;
     if(pVector->size >= pVector->capacity)
@@ -51,12 +54,12 @@ Status push_back(VECTOR hVector, STRING hString)
         if(!resize(pVector, pVector->size*2))
             return FAILURE;
     }
-    pVector->data[pVector->size] = hString;
+    pVector->data[pVector->size] = *pBook;
     pVector->size++;
     return SUCCESS;
 }
 
-Status pop(VECTOR hVector)
+Status vector_pop(VECTOR hVector)
 {
     Vector* pVector = (Vector*)hVector;
     if(pVector->size == 0)
@@ -68,7 +71,7 @@ Status pop(VECTOR hVector)
     return SUCCESS;
 }
 
-STRING* at(VECTOR hVector, int index)
+Book* vector_at(VECTOR hVector, int index)
 {
     Vector* pVector = (Vector*)hVector;
     if(index < 0 || index > pVector->size)
@@ -79,13 +82,13 @@ STRING* at(VECTOR hVector, int index)
     return &pVector->data[index];
 }
 
-int size(VECTOR hVector)
+int vector_size(VECTOR hVector)
 {
     Vector* pVector = (Vector*)hVector;
     return pVector->size;
 }
 
-Status empty(VECTOR hVector)
+Status vector_empty(VECTOR hVector)
 {
     Vector* pVector = (Vector*)hVector;
     return (!pVector->size);
@@ -99,7 +102,7 @@ Status resize(Vector* pVector, int newCapacity)
         fprintf(stderr, "Failed to allocate memory upon resize request...\n");
         return FAILURE;
     }
-    temp->data = (STRING*)malloc(newCapacity * sizeof(STRING));
+    temp->data = (Book*)malloc(newCapacity * sizeof(Book));
     if(!temp->data)
     {
         fprintf(stderr, "Failed to allocate memory upon resize request...\n");
