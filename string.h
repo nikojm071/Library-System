@@ -10,9 +10,13 @@ void string_destroy(STRING* phString);
 
 int string_length(STRING hString);
 Status string_empty(STRING hString);
-STRING* string_at(STRING hString, int index);
-Status string_concat(STRING targt, STRING append);
+char* string_at(STRING hString, int index);
+Status string_concat(STRING target, STRING append);
 Status string_push_back(STRING hString, char c);
 Status string_pop(STRING hString);
+
+Status string_extraction(STRING hString, FILE* readFrom);
+void string_output(STRING hString);
+
 
 #endif

@@ -37,24 +37,20 @@ VECTOR vector_init_default(void)
 void vector_destroy(VECTOR* phVector)
 {
     Vector* pVector = (Vector*)*phVector;
-    //not sure which is correct yet. will test at a later date.
-    /*for(int i = 0; i < pVector->size; i++)
-        sDestroy(&pVector->data[pVector->size]);
-    */
     free(pVector->data);
     free(pVector);
     pVector = NULL;
 }
 
-Status vector_push_back(VECTOR hVector, Book* pBook)
+Status vector_push_back(VECTOR hVector, Book pBook)
 {
     Vector* pVector = (Vector*)hVector;
     if(pVector->size >= pVector->capacity)
     {
-        if(!resize(pVector, pVector->size*2))
+        if(!resize(pVector, (pVector->capacity *2)))
             return FAILURE;
     }
-    pVector->data[pVector->size] = *pBook;
+    pVector->data[pVector->size] = pBook;
     pVector->size++;
     return SUCCESS;
 }
@@ -68,6 +64,13 @@ Status vector_pop(VECTOR hVector)
         return FAILURE;
     }
     pVector->size--;
+
+    if(pVector->capacity <= pVector->size/2)
+    {
+        if(resize(pVector, (pVector->capacity/2)))
+            return FAILURE;
+    }
+    
     return SUCCESS;
 }
 
@@ -96,21 +99,18 @@ Status vector_empty(VECTOR hVector)
 
 Status resize(Vector* pVector, int newCapacity)
 {
-    Vector* temp = (Vector*)malloc(sizeof(Vector));
+    Book* temp = (Book*)malloc(sizeof(Book) * newCapacity);
     if(!temp)
     {
         fprintf(stderr, "Failed to allocate memory upon resize request...\n");
         return FAILURE;
     }
-    temp->data = (Book*)malloc(newCapacity * sizeof(Book));
-    if(!temp->data)
+    for(int i = 0; i < pVector->size; i++)
     {
-        fprintf(stderr, "Failed to allocate memory upon resize request...\n");
-        return FAILURE;
+        temp[i] = pVector->data[i];
     }
-    temp->data = pVector->data;
     free(pVector->data);
-    free(pVector);
-    pVector = temp;
+    pVector->capacity = newCapacity;
+    pVector->data = temp;
     return SUCCESS;
 }

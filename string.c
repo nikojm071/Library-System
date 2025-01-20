@@ -13,6 +13,8 @@ struct string{
 };
 typedef struct string String;
 
+Status resize_string(String* pString, int newCapacity);
+
 STRING string_init_default(void)
 {
     String* pString = (String*)malloc(sizeof(String));
@@ -23,7 +25,7 @@ STRING string_init_default(void)
     }
     pString->size = 0;
     pString->capacity = 10;
-    pString->data = (char*)malloc(sizeof(pString->capacity)* sizeof(char));
+    pString->data = (char*)malloc(pString->capacity * sizeof(char));
     if(!pString->data)
     {
         fprintf(stderr, "Failed to allocate memory for string");
@@ -55,7 +57,7 @@ STRING string_init_assign(const char* str)
         fprintf(stderr, "Failed to allocate memory for string");
         return NULL;
     }
-    for(int i = 0; i < pString->size; i++)
+    for(int i = 0; i < pString->capacity; i++)
     {
         pString->data[i] = str[i];
         /* - testing
@@ -87,7 +89,7 @@ Status string_empty(STRING hString)
     return (!pString->size);
 }
 
-STRING* string_at(STRING hString, int index)
+char* string_at(STRING hString, int index)
 {
     String* pString = (String*)hString;
     if(index > pString->size || index < 0)
@@ -98,18 +100,119 @@ STRING* string_at(STRING hString, int index)
     return &pString->data[index];
 }
 
-Status string_concat(STRING targt, STRING append)
+Status string_concat(STRING target, STRING append)
 {
+    String* pTarget = (String*)target;
+    String* pAppend = (String*)append;
+
+    while((pTarget->size + pAppend->size) >= pTarget->capacity-1)
+    {
+        if(!resize_string(pTarget, (pTarget->capacity*2)))
+            return FAILURE;
+    }
+    
+    for(int i = 0; i < pAppend->size; i++)
+    {
+        pTarget->data[pTarget->size] = pAppend->data[i];
+        //testing -
+        //printf("pTarget->data[i] = %c\n", pTarget->data[i]);
+        //printf("pTarget->data = %s\n", pTarget->data);
+        pTarget->size++;
+    }
+    pTarget->data[pTarget->size] = '\0';
+    
     return SUCCESS;
 }
 
 Status string_push_back(STRING hString, char c)
 {
+    String* pString = (String*)hString;
+    //pString size must ALWAYS be 1 less than the capacity to leave room for the null terminator
+    if(pString->size >= (pString->capacity-1))
+    {
+        if(!resize_string(pString, (pString->capacity * 2)))
+            return FAILURE;
+    }
+    pString->data[pString->size] = c;
+    pString->size++;
+    pString->data[pString->size] = '\0';
     return SUCCESS;
 }
 
 Status string_pop(STRING hString)
 {
+    String* pString = (String*)hString;
+    if(pString->size == 0)
+    {
+        fprintf(stderr, "Unable to pop when this string is empty...");
+        return FAILURE;
+    }
+    pString->size--;
+    pString->data[pString->size] = '\0';
+
+    if(pString->capacity <= pString->size/2)
+    {
+        if(resize_string(pString, (pString->capacity/2)))
+            return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+Status string_extraction(STRING hString, FILE* readFrom)
+{
+    String* pString = (String*)hString;
+    if(readFrom == NULL)
+    {
+        fprintf(stderr, "File was not opened properly or failed to open...");
+        return FAILURE;
+    }
+    pString->size = 0;
+    char c = '\0';
+    //skip leading whitespaces
+    while((c = fgetc(readFrom)) != EOF && c == ' ');
+    //replace first non-leading whitespace character
+    ungetc(c, readFrom);
+    while((c = fgetc(readFrom)) != EOF)
+    {
+        if(pString->size == pString->capacity-1)
+        {
+            if(!resize_string(pString, (pString->capacity * 2)))
+                return FAILURE;
+        }
+        pString->data[pString->size] = c;
+        pString->size++;
+    }
+    pString->data[pString->size] = '\0';
+    return SUCCESS;
+}
+
+void string_output(STRING hString)
+{
+    String* pString = (String*)hString;
+    for(int i = 0; i < (pString->size + 1); i++)
+    {
+        printf("%c", pString->data[i]);
+    }
+    return;
+}
+
+Status resize_string(String* pString, int newCapacity)
+{
+    char* temp = (char*)malloc(sizeof(char) * newCapacity);
+    if(!temp)
+    {
+        fprintf(stderr, "Failed to allocate memory upon resize request...\n");
+        return FAILURE;
+    }
+    for(int i = 0; i < pString->size; i++)
+    {
+        temp[i] = pString->data[i];
+    }
+    temp[pString->size+1] = '\0';
+    free(pString->data);
+    pString->capacity = newCapacity;
+    pString->data = temp;
     return SUCCESS;
 }
 
