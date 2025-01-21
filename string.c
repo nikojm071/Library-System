@@ -1,9 +1,3 @@
-#ifndef STRING_C
-#define STRING_C
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "status.h"
 #include "string.h"
 
 struct string{
@@ -173,7 +167,7 @@ Status string_extraction(STRING hString, FILE* readFrom)
     while((c = fgetc(readFrom)) != EOF && c == ' ');
     //replace first non-leading whitespace character
     ungetc(c, readFrom);
-    while((c = fgetc(readFrom)) != EOF)
+    while((c = fgetc(readFrom)) != EOF && c != '\n')
     {
         if(pString->size == pString->capacity-1)
         {
@@ -215,5 +209,3 @@ Status resize_string(String* pString, int newCapacity)
     pString->data = temp;
     return SUCCESS;
 }
-
-#endif

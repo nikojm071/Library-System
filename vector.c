@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "vector.h"
-#include "string.h"
-#include "status.h"
-#include "book.h"
 
 struct vector{
     Book* data;
@@ -23,7 +18,7 @@ VECTOR vector_init_default(void)
         exit(1);
     }
     pVector->size = 0;
-    pVector->capacity = 10;
+    pVector->capacity = 5;
     pVector->data = (Book*)malloc(pVector->capacity * sizeof(Book));
     if(!pVector->data)
     {
