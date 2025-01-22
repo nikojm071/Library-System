@@ -1,26 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "book.h"
 
 void clearKeyboardBuffer(void);
 void promptOptions(int* x);
+void promptCheckout(char* arr);
+int keepUsingLibrary();
 
 int main(int argc, char* argv[])
 {
     int x;
-    promptOptions(&x);
+    printf("Hey! Welcome to Nick's library. Let me know what I can do for you.\n");
+    do
+    {
+        promptOptions(&x);
+        initialize_library_selection();
+        printf("\n");
 
-    initialize_library_selection();
-    printf("\n");
-    if(x == 1)
-        output_library_selection();
-    if(x == 2)
-        printf("function not implemented yet, it will eventually tho\n");
-    if(x == 3)
-        printf("function not implemented yet, it will eventually tho\n");
-    if(x == 4)
-        printf("function not implemented yet, it will eventually tho\n");
-    
+        if(x == 1)
+            output_library_selection();
+        if(x == 2)
+        {
+            char arr[100];
+            do
+            {
+                promptCheckout(arr);
+            }
+            while(!checkout_book(arr));
+        }
+        if(x == 3)
+            printf("function not implemented yet, it will eventually tho\n");
+        if(x == 4)
+            printf("function not implemented yet, it will eventually tho\n");
+    }
+    while(keepUsingLibrary());
     return 0;
 }
 
@@ -39,6 +53,30 @@ void promptOptions(int* x)
         scanf("%d", x);
         clearKeyboardBuffer();
     }
+}
+
+void promptCheckout(char* arr)
+{
+    printf("Which book would you like to check out? Please enter the full title exactly: ");
+    scanf("%s", arr);
+    clearKeyboardBuffer();
+}
+
+int keepUsingLibrary()
+{
+    char c = ' ';
+    printf("Would you like to keep using the library (y/n)?: ");
+    scanf("%c", &c);
+    c = tolower(c);
+    clearKeyboardBuffer();
+    while(c != 'y' && c != 'n')
+    {
+        printf("Would you like to keep using the library (y/n)?: ");
+        scanf("%c", &c);
+        c = tolower(c);
+        clearKeyboardBuffer();
+    }
+    return (c == 'y');
 }
 
 void clearKeyboardBuffer(void)

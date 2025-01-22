@@ -19,6 +19,7 @@ Status string_pop(STRING hString);
 
 Status string_extraction(STRING hString, FILE* readFrom);
 void string_output(STRING hString);
+int string_compare(STRING string1, STRING string2);
 
 
 #endif

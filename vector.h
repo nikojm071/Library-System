@@ -14,4 +14,6 @@ Book* vector_at(VECTOR hVector, int index);
 int vector_size(VECTOR hVector);
 Status vector_empty(VECTOR hVector);
 
+//void vector_insertion_sort(VECTOR hVector);
+
 #endif

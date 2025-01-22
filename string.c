@@ -25,7 +25,7 @@ STRING string_init_default(void)
         fprintf(stderr, "Failed to allocate memory for string");
         return NULL;
     }
-
+    
     return pString;
 }
 
@@ -189,6 +189,22 @@ void string_output(STRING hString)
         printf("%c", pString->data[i]);
     }
     return;
+}
+
+int string_compare(STRING string1, STRING string2)
+{
+    String* pString1 = (String*)string1;
+    String* pString2 = (String*)string2;
+    if(pString1->size != pString2->size)
+        return 0;
+    for(int i = 0; i < pString1->size; i++)
+    {
+        printf("pString1->data[i]: %c\n", pString1->data[i]);
+        printf("pString2->data[i]: %c\n", pString2->data[i]);
+        if(pString1->data[i] != pString2->data[i])
+            return 0;
+    }
+    return 1;
 }
 
 Status resize_string(String* pString, int newCapacity)
