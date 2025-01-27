@@ -1,7 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 #include "status.h"
-#include "book.h"
+#include "library.h"
 
 typedef void* VECTOR;
 
